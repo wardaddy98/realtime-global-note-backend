@@ -46,8 +46,8 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: '*',
-    methods: ['GET', 'PATCH', 'POST', 'DELETE'],
+    // origin: '*',
+    // methods: ['GET', 'PATCH', 'POST', 'DELETE'],
   }),
 );
 
@@ -55,5 +55,4 @@ app.use('/', mainRouter);
 
 server.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
-  console.log('test');
 });
