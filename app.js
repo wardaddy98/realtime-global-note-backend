@@ -46,8 +46,8 @@ app.use(express.json());
 
 app.use(
   cors({
-    // origin: '*',
-    // methods: ['GET', 'PATCH', 'POST', 'DELETE'],
+    origin: ['https://realtime-global-note.netlify.app', 'http://localhost:3000'],
+    methods: ['GET', 'PATCH', 'POST', 'DELETE'],
   }),
 );
 
