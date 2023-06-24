@@ -33,12 +33,12 @@ io.on('connection', socket => {
   console.log(`Socket connection established with id ${socket.id}`);
 
   socket.on('disconnect', () => {
-    unSubscribeUserOnDisconnection(socketId, socket);
+    unSubscribeUserOnDisconnection(socketId);
     console.log(`Socket connection destroyed with id ${socket.id}`);
   });
 
-  socket.on('subscribe', userId => subscribeUser(userId, socket, socketId));
-  socket.on('unsubscribe', userId => unsubscribeUser(userId, socket));
+  socket.on('subscribe', userId => subscribeUser(userId, socketId));
+  socket.on('unsubscribe', userId => unsubscribeUser(userId));
 
   //for editing status of notes
   socket.on('note-in-use', noteId => {

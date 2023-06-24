@@ -1,40 +1,38 @@
 import _ from 'lodash';
 import { User } from '../models/user.model.js';
 
-export const subscribeUser = async (userId, socket, socketId) => {
+export const subscribeUser = async (userId, socketId) => {
   try {
     const user = await User.findById(userId).lean();
 
     if (!_.isEmpty(user)) {
       await User.updateOne({ _id: userId }, { $set: { isOnline: true, socketId } });
-      //emit to sockets other than sender socket
-      socket.broadcast.emit('user-online', userId);
+      global.socketIo.emit('user-online', userId);
     }
   } catch (err) {
     console.log(err);
   }
 };
 
-export const unsubscribeUser = async (userId, socket) => {
+export const unsubscribeUser = async userId => {
   try {
     const user = await User.findById(userId).lean();
 
     if (!_.isEmpty(user)) {
       await User.updateOne({ _id: userId }, { $set: { isOnline: false, socketId: '' } });
-      //emit to sockets other than sender socket
-      socket.broadcast.emit('user-offline', userId);
+      global.socketIo.emit('user-offline', userId);
     }
   } catch (err) {
     console.log(err);
   }
 };
 
-export const unSubscribeUserOnDisconnection = async (socketId, socket) => {
+export const unSubscribeUserOnDisconnection = async socketId => {
   try {
     const user = await User.findOne({ socketId }).lean();
     if (!_.isEmpty(user)) {
       await User.updateOne({ _id: user._id }, { $set: { isOnline: false, socketId: '' } });
-      socket.broadcast.emit('user-offline', user._id);
+      global.socketIo.emit('user-offline', user._id);
     }
   } catch (err) {
     console.log(err);
