@@ -5,7 +5,11 @@ import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 import { DB_URI, PORT } from './constants.js';
 import mainRouter from './routes.js';
-import { subscribeUser, unSubscribeUser } from './src/utils/socketUtils.js';
+import {
+  subscribeUser,
+  unSubscribeUserOnDisconnection,
+  unsubscribeUser,
+} from './src/utils/socketUtils.js';
 
 try {
   mongoose.connect(DB_URI).then(() => {
@@ -24,14 +28,17 @@ const io = new Server(server);
 global.socketIo = io;
 
 io.on('connection', socket => {
+  const socketId = socket.id;
+
   console.log(`Socket connection established with id ${socket.id}`);
 
   socket.on('disconnect', () => {
+    unSubscribeUserOnDisconnection(socketId, socket);
     console.log(`Socket connection destroyed with id ${socket.id}`);
   });
 
-  socket.on('subscribe', subscribeUser);
-  socket.on('unsubscribe', unSubscribeUser);
+  socket.on('subscribe', userId => subscribeUser(userId, socket, socketId));
+  socket.on('unsubscribe', userId => unsubscribeUser(userId, socket));
 
   //for editing status of notes
   socket.on('note-in-use', noteId => {

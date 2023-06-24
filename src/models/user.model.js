@@ -6,7 +6,9 @@ const userSchema = mongoose.Schema({
     type: String,
     default: () => nanoid(),
   },
-
+  socketId: {
+    type: String,
+  },
   name: {
     type: String,
   },
@@ -17,7 +19,7 @@ const userSchema = mongoose.Schema({
   },
   createdAt: {
     type: Number,
-    default: () => nanoid(),
+    default: () => Date.now(),
     immutable: true,
   },
 });
